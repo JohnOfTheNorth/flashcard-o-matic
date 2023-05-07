@@ -4,13 +4,17 @@ import { readDeck, createCard } from "../../utils/api";
 import CardForm from "./CardForm";
 
 function AddCard() {
-  const [deck, setDeck] = useState({});
-  const [form, setForm] = useState({
-    front: "",
-    back: "",
-  });
   const history = useHistory();
   const { deckId } = useParams();
+  const initialFormState = {
+    front: "",
+    back: "",
+  };
+
+  const [deck, setDeck] = useState({});
+  const [formData, setFormData] = useState({
+    ...initialFormState,
+  });
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -24,10 +28,10 @@ function AddCard() {
     return () => abortController.abort();
   }, [deckId]);
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-    createCard(deckId, form);
-    setForm(form);
+    await createCard(deckId, formData);
+    setFormData(formData);
     history.push(`/decks/${deckId}`);
   };
 
@@ -49,7 +53,11 @@ function AddCard() {
 
       <h2>{deck.name}: Add Card</h2>
 
-      <CardForm form={form} setForm={setForm} submit={submitHandler} />
+      <CardForm
+        formData={formData}
+        setFormData={setFormData}
+        submit={submitHandler}
+      />
     </div>
   );
 }

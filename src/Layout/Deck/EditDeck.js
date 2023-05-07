@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { updateDeck, readDeck } from "../../utils/api";
 import DeckForm from "./DeckForm";
 
 function EditDeck() {
   const [deck, setDeck] = useState({});
   const { deckId } = useParams();
-  const [form, setForm] = useState({
+  const history = useHistory();
+  const [formData, setFormData] = useState({
     id: "",
     name: "",
     description: "",
@@ -17,8 +18,8 @@ function EditDeck() {
 
     async function loadDeck() {
       const response = await readDeck(deckId, abortController.signal);
-      setDeck(response);
-      setForm({
+      await setDeck(response);
+      setFormData({
         id: response.id,
         name: response.name,
         description: response.description,
@@ -28,9 +29,10 @@ function EditDeck() {
     return () => abortController.abort();
   }, [deckId]);
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-    updateDeck(form);
+    await updateDeck(formData);
+    history.push(`/decks/${deck.id}`);
   };
 
   return (
@@ -49,7 +51,11 @@ function EditDeck() {
         </ol>
       </nav>
       <h1>Edit Deck</h1>
-      <DeckForm form={form} setForm={setForm} submit={submitHandler} />
+      <DeckForm
+        formData={formData}
+        setFormData={setFormData}
+        submit={submitHandler}
+      />
     </div>
   );
 }

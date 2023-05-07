@@ -5,7 +5,7 @@ import CardForm from "./CardForm";
 
 function EditCard() {
   const [deck, setDeck] = useState({});
-  const [form, setForm] = useState({});
+  const [formData, setFormData] = useState({});
   const { deckId } = useParams();
   const { cardId } = useParams();
   const history = useHistory();
@@ -17,16 +17,16 @@ function EditCard() {
       const deckRead = await readDeck(deckId, abortController.signal);
       setDeck(deckRead);
       const cardRead = await readCard(cardId, abortController.signal);
-      setForm(cardRead);
+      setFormData(cardRead);
     }
 
     loadDeck();
     return () => abortController.abort();
   }, [deckId, cardId]);
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-    updateCard(form);
+    await updateCard(formData);
     history.push(`/decks/${deckId}`);
   };
 
@@ -48,7 +48,11 @@ function EditCard() {
       </nav>
 
       <h2>Edit Card</h2>
-      <CardForm form={form} setForm={setForm} submit={submitHandler} />
+      <CardForm
+        formData={formData}
+        setFormData={setFormData}
+        submit={submitHandler}
+      />
     </div>
   );
 }

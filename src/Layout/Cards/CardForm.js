@@ -1,12 +1,12 @@
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-function CardForm({ form, setForm, submit }) {
+function CardForm({ formData, setFormData, submit }) {
   const history = useHistory();
   const { deckId } = useParams();
   const changeHandler = (event) => {
-    setForm({
-      ...form,
+    setFormData({
+      ...formData,
       [event.target.name]: event.target.value,
     });
   };
@@ -26,7 +26,7 @@ function CardForm({ form, setForm, submit }) {
           name="front"
           placeholder="Front side of card"
           onChange={changeHandler}
-          value={form.front}
+          value={formData.front}
           required
         ></textarea>
       </div>
@@ -40,7 +40,7 @@ function CardForm({ form, setForm, submit }) {
           name="back"
           placeholder="Back side of card"
           onChange={changeHandler}
-          value={form.back}
+          value={formData.back}
           required
         ></textarea>
       </div>

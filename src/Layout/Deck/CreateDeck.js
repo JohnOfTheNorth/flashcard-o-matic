@@ -4,17 +4,18 @@ import { useHistory } from "react-router-dom";
 import DeckForm from "./DeckForm";
 
 function CreateDeck() {
-  const [form, setForm] = useState({
+  const initialFormState = {
     name: "",
     description: "",
-  });
+  };
+  const [formData, setFormData] = useState({ ...initialFormState });
   const history = useHistory();
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-    createDeck(form);
-    setForm(form);
-    history.push("/");
+    setFormData(formData);
+    await createDeck(formData);
+    history.goBack();
   };
 
   return (
@@ -30,7 +31,11 @@ function CreateDeck() {
         </ol>
       </nav>
       <h1>Create Deck</h1>
-      <DeckForm form={form} setForm={setForm} submit={submitHandler} />
+      <DeckForm
+        formData={formData}
+        setFormData={setFormData}
+        submit={submitHandler}
+      />
     </div>
   );
 }

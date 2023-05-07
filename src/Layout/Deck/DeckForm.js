@@ -1,17 +1,17 @@
-import React from "react";
+import { React } from "react";
 import { useHistory } from "react-router-dom";
 
-function DeckForm({ form, setForm, submit }) {
+function DeckForm({ formData, setFormData, submit }) {
   const history = useHistory();
 
   const changeHandler = (event) =>
-    setForm({
-      ...form,
+    setFormData({
+      ...formData,
       [event.target.name]: event.target.value,
     });
 
   const cancelHandler = () => {
-    history.goBack();
+    history.push(`/`);
   };
 
   return (
@@ -26,7 +26,7 @@ function DeckForm({ form, setForm, submit }) {
             type="text"
             placeholder="Deck Name"
             onChange={changeHandler}
-            value={form.name}
+            value={formData.name}
             required
           ></input>
         </div>
@@ -40,7 +40,7 @@ function DeckForm({ form, setForm, submit }) {
             rows="4"
             placeholder="Brief description of the deck"
             onChange={changeHandler}
-            value={form.description}
+            value={formData.description}
           ></textarea>
         </div>
         <button className="btn btn-secondary" onClick={cancelHandler}>
