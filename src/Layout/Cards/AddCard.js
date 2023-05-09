@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { readDeck, createCard } from "../../utils/api";
 import CardForm from "./CardForm";
 
 function AddCard() {
-  const history = useHistory();
   const { deckId } = useParams();
   const initialFormState = {
     front: "",
@@ -15,6 +14,7 @@ function AddCard() {
   const [formData, setFormData] = useState({
     ...initialFormState,
   });
+  const abortController = new AbortController();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -28,11 +28,19 @@ function AddCard() {
     return () => abortController.abort();
   }, [deckId]);
 
-  const submitHandler = async (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
-    await createCard(deckId, formData);
-    setFormData(formData);
-    history.push(`/decks/${deckId}`);
+    async function cardCreate() {
+      try {
+        await createCard(deckId, formData, abortController.signal);
+        setFormData({ ...initialFormState });
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          throw error;
+        }
+      }
+    }
+    cardCreate();
   };
 
   return (
