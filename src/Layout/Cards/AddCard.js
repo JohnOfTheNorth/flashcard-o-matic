@@ -17,15 +17,12 @@ function AddCard() {
   const abortController = new AbortController();
 
   useEffect(() => {
-    const abortController = new AbortController();
-
     async function loadDeck() {
-      const response = await readDeck(deckId, abortController.signal);
-      setDeck(response);
+      const response = await readDeck(deckId);
+      setDeck(() => response);
     }
 
     loadDeck();
-    return () => abortController.abort();
   }, [deckId]);
 
   const submitHandler = (event) => {
